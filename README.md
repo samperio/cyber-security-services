@@ -1,5 +1,46 @@
 # cyber-security-services
 
+```
+                       ~ cyber-security-services ~
+
+     CLIENTE                                          SERVIDOR
+  ┌──────────┐                                      ┌──────────┐
+  │  (•_•)   │  1) "Aquí va mi pedido..."           │  (•‿•)   │
+  │  / >📦   │ ─────────────────────────────────►  │          │
+  └──────────┘                                      └────┬─────┘
+                                                         │
+  ┌──────────┐                                      ┌────▼─────┐
+  │  (•_•)   │  2) Firma con llave secreta 🔑       │ 🛡️ HMAC  │ ← ¿La firma
+  │  / >✍️   │ ─── sha256=abc123... ────────────►  │  GUARD   │   coincide?
+  └──────────┘                                      └────┬─────┘
+                                                    ✅ SÍ │  ❌ NO → 403 🚫
+  ┌──────────┐                                      ┌────▼─────┐
+  │  (•_•)   │  3) Mete el pedido en caja fuerte    │ 🔐 AES   │ ← ¿Se puede
+  │  / >🔐   │ ─── [#@!%&*xK9mQ...] ───────────►  │  GUARD   │   abrir?
+  └──────────┘                                      └────┬─────┘
+                                                    ✅ SÍ │  ❌ NO → 400 🚫
+                                                    ┌────▼─────────────────┐
+                                                    │   HANDLER 🎉         │
+                                                    │  {"order_id":"ORD-1",│
+                                                    │   "amount": 250.0 }  │
+                                                    └──────────────────────┘
+
+  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+     😈 ATACANTE                ¿Qué pasa si intenta colarse?
+
+      (>ᴗ•) "modifico          sha256=abc123  ← firma del original
+      el monto a $0.01"        amount: 0.01   ← body manipulado
+
+                                    🛡️ HMAC GUARD: "Eso no cuadra..."
+                                                              403 🚫 BOOM
+
+      (>ᴗ•) "intercepto        [#@!%&*xK9mQ...]  ← no sé la llave
+      el mensaje cifrado"
+                                    🔐 AES GUARD: "Ni lo intentes."
+                                                              400 🚫 BOOM
+```
+
 API REST con validación de integridad y cifrado de payload, construida con FastAPI.
 
 ## Qué hace
